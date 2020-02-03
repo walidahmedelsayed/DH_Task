@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Docler Task</title>
+</head>
+
+<body>
+    <button id="btn">Click</button>
+    <table id='board' class='board{{#yourTurn}} your-turn{{/yourTurn}}'>
+        <tr>
+            <td id='p0' {{^p0}} class='empty' {{/p0}}>{{p0}}</td>
+            <td id='p1' {{^p1}} class='empty' {{/p1}}>{{p1}}</td>
+            <td id='p2' {{^p2}} class='empty' {{/p2}}>{{p2}}</td>
+        </tr>
+        <tr>
+            <td id='p3' {{^p3}} class='empty' {{/p3}}>{{p3}}</td>
+            <td id='p4' {{^p4}} class='empty' {{/p4}}>{{p4}}</td>
+            <td id='p5' {{^p5}} class='empty' {{/p5}}>{{p5}}</td>
+        </tr>
+        <tr>
+            <td id='p6' {{^p6}} class='empty' {{/p6}}>{{p6}}</td>
+            <td id='p7' {{^p7}} class='empty' {{/p7}}>{{p7}}</td>
+            <td id='p8' {{^p8}} class='empty' {{/p8}}>{{p8}}</td>
+        </tr>
+    </table>
+    <script src="script.js"></script>
+</body>
+
+</html>
