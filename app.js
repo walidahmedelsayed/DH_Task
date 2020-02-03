@@ -1,4 +1,6 @@
 require("./src/Board");
+const CMDPlayer = require("./src/CMDPlayer");
+const BrowserPlayer = require("./src/BrowserPlayer");
 const WebSocket = require('ws');
 const wss = new WebSocket.Server({
     port: 3000
@@ -14,53 +16,91 @@ wss.getUniqueID = () => {
 
 wss.on('connection', function connection(ws, req) {
     let generatedId = wss.getUniqueID();
-    ws.id = generatedId;
     let id = generatedId;
+    let type = req.url.match(/\?type=(.*?)\?/)[1];
     let name = req.url.match(/\?name=(.*?)\?/)[1];
     let symbol = req.url.match(/\?symbol=(.*?)?/)[1];
-    let player = {
-        name,
-        symbol,
-        playPosition: null,
-        playturn: !players.size ? true : false
-    };
+    let playturn = !players.size ? true : false;
+    let isSpectator = players.size >= 2 ? true : false;
+    ws.id = generatedId;
+    ws.type = type;
+    ws.isSpectator = isSpectator;
 
-    players.size < 2 ? players.set(id, player) : ws.send("You are a spectator");
+    let player = type === "cmd" ? new CMDPlayer(name, symbol, playturn, isSpectator) : new BrowserPlayer(name, symbol, playturn, isSpectator);
+
+    players.set(id, player);
+
+    let activePlayers = Array.from(players.values()).reduce((acc, p) => {
+        return p.isSpectator ? acc : acc += 1;
+    }, 0)
+
+    if (player.isSpectator) {
+        let message = "You are a spectator. The board will appear on any player's turn";
+        return player.constructor.name === "CMDPlayer" ? ws.send(message) : ws.send(JSON.stringify({
+            message
+        }))
+    }
 
     wss.clients.forEach((client) => {
         if (client.readyState === WebSocket.OPEN && client.id !== ws.id) {
-            client.send(`${name} has joined the game ... \n` + printBoard());
+            let message = `${name} has joined the game ... \n`;
+            if (client.type === "cmd") {
+                return client.send(message)
+            } else {
+                return client.send(JSON.stringify({
+                    message,
+                    positions
+                }));
+            }
         }
     });
+
     if (players.has(ws.id)) {
-        ws.send(`Welcome ${player.name} to the Game: \n 
+        if (ws.type === "cmd") {
+            ws.send(`Welcome ${player.name} to the Game: \n 
             1 | 2 | 3 \n
             4 | 5 | 6 \n
             7 | 8 | 9 \n\nChoose the position by number, Please press the choosed postion to start\nYour symbol is ${player.symbol}`);
-
+        } else {
+            ws.send(JSON.stringify({
+                message: `Welcome ${player.name} to the Game: \nYour symbol is ${player.symbol}`
+            }))
+        }
     }
 
 
     ws.onmessage = function (event) {
-        if (!players.has(ws.id)) {
-            ws.send("You're spectator. The board will appear on any player's turn");
-            return;
-        }
 
         let player1 = players.get(ws.id);
         player1.playPosition = event.data;
 
-        if (players.size === 2) {
+        if (ws.isSpectator) {
+            let message = "You're a spectator. The board will appear on any player's turn";
+            return (ws.type === "cmd") ? ws.send(message) : ws.send(JSON.stringify({
+                message
+            }));
+        }
+
+        if (activePlayers === 2 || undefined) {
             let otherPlayerId = Array.from(players.keys()).filter(id => id !== ws.id)[0];
             let player2 = players.get(otherPlayerId);
-            let result = play(player1, player2);
+            let result = player1.play(player2);
             wss.clients.forEach((client) => {
                 if (client.readyState === WebSocket.OPEN) {
-                    client.send(result);
+                    if (client.type !== "cmd") {
+                        client.send(result);
+                    } else {
+                        client.send(`${result.message}\n` + printBoard(result.positions));
+                    }
                 }
             });
         } else {
-            ws.send("Waiting for the other player to connect ...");
+            let message = "Waiting for the other player to connect ...";
+
+            return ws.type !== "cmd" ? ws.send(JSON.stringify({
+                message,
+                positions
+            })) : ws.send(message);
         }
     }
 

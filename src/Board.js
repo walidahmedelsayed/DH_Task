@@ -1,4 +1,4 @@
-let positions = {
+module.exports = positions = {
     1: ' ',
     2: ' ',
     3: ' ',
@@ -10,12 +10,12 @@ let positions = {
     9: ' '
 };
 
-const isValidPlay = (p) => {
+module.exports = isValidPlay = (p) => {
     return positions[p] == ' ' ? true : false;
 }
 
 
-const isBoardEmpty = () => {
+module.exports = isBoardEmpty = () => {
     for (let v of Object.values(positions)) {
         if (v !== " ") {
             return false;
@@ -24,7 +24,7 @@ const isBoardEmpty = () => {
     return true;
 }
 
-const checkDraw = () => {
+module.exports = checkDraw = () => {
     for (let v of Object.values(positions)) {
         if (v === " ") {
             return false;
@@ -34,7 +34,7 @@ const checkDraw = () => {
     return true;
 }
 
-module.exports = printBoard = () => {
+module.exports = printBoard = (positions) => {
     return ('\n' +
         ' ' + positions[1] + ' | ' + positions[2] + ' | ' + positions[3] + '\n' +
         ' ---------\n' +
@@ -43,13 +43,13 @@ module.exports = printBoard = () => {
         ' ' + positions[7] + ' | ' + positions[8] + ' | ' + positions[9] + '\n');
 }
 
-const clearBoard = () => {
+module.exports = clearBoard = () => {
     for (let value of Object.keys(positions)) {
         positions[value] = " ";
     }
 }
 
-const checkWin = () => {
+module.exports = checkWin = () => {
     if (
         positions[1] === positions[2] && positions[1] === positions[3] && positions[1] !== " " ||
         positions[4] === positions[5] && positions[4] === positions[6] && positions[4] !== " " ||
@@ -67,26 +67,26 @@ const checkWin = () => {
     }
 }
 
-module.exports = play = (player1, player2) => {
-    if (isBoardEmpty() && player1.playPosition === "Y") {
-        printBoard()
-    }
-    if (player1.playturn) {
-        if (isValidPlay(player1.playPosition)) {
-            positions[player1.playPosition] = player1.symbol;
-            player1.playturn = false;
-            player2.playturn = !player1.playturn
-            if (checkWin()) {
-                return `${player1.name} Win \n Press any key to play again`;
-            } else if (checkDraw()) {
-                return "Game Draw";
-            } else {
-                return printBoard();
-            }
-        } else {
-            return `For ${player1.name}: Invalid position, Please choose another one \n` + printBoard();
-        }
-    } else {
-        return `It's ${player2.name} turn \n` + printBoard();
-    }
-}
+// module.exports = play = (player1, player2) => {
+//     if (isBoardEmpty() && player1.playPosition === "Y") {
+//         printBoard()
+//     }
+//     if (player1.playturn) {
+//         if (isValidPlay(player1.playPosition)) {
+//             positions[player1.playPosition] = player1.symbol;
+//             player1.playturn = false;
+//             player2.playturn = !player1.playturn
+//             if (checkWin()) {
+//                 return `${player1.name} Win \n Press any key to play again`;
+//             } else if (checkDraw()) {
+//                 return "Game Draw";
+//             } else {
+//                 return printBoard();
+//             }
+//         } else {
+//             return `For ${player1.name}: Invalid position, Please choose another one \n` + printBoard();
+//         }
+//     } else {
+//         return `It's ${player2.name} turn \n` + printBoard();
+//     }
+// }
