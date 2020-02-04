@@ -30,10 +30,6 @@ wss.on('connection', function connection(ws, req) {
 
     players.set(id, player);
 
-    let activePlayers = Array.from(players.values()).reduce((acc, p) => {
-        return p.isSpectator ? acc : acc += 1;
-    }, 0)
-
     if (player.isSpectator) {
         let message = "You are a spectator. The board will appear on any player's turn";
         return player.constructor.name === "CMDPlayer" ? ws.send(message) : ws.send(JSON.stringify({
@@ -80,8 +76,11 @@ wss.on('connection', function connection(ws, req) {
                 message
             }));
         }
+        let activePlayers = Array.from(players.values()).reduce((acc, p) => {
+            return p.isSpectator ? acc : acc += 1;
+        }, 0)
 
-        if (activePlayers === 2 || undefined) {
+        if (activePlayers === 2) {
             let otherPlayerId = Array.from(players.keys()).filter(id => id !== ws.id)[0];
             let player2 = players.get(otherPlayerId);
             let result = player1.play(player2);
