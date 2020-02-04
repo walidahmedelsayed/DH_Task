@@ -66,27 +66,3 @@ module.exports = checkWin = () => {
         return false;
     }
 }
-
-// module.exports = play = (player1, player2) => {
-//     if (isBoardEmpty() && player1.playPosition === "Y") {
-//         printBoard()
-//     }
-//     if (player1.playturn) {
-//         if (isValidPlay(player1.playPosition)) {
-//             positions[player1.playPosition] = player1.symbol;
-//             player1.playturn = false;
-//             player2.playturn = !player1.playturn
-//             if (checkWin()) {
-//                 return `${player1.name} Win \n Press any key to play again`;
-//             } else if (checkDraw()) {
-//                 return "Game Draw";
-//             } else {
-//                 return printBoard();
-//             }
-//         } else {
-//             return `For ${player1.name}: Invalid position, Please choose another one \n` + printBoard();
-//         }
-//     } else {
-//         return `It's ${player2.name} turn \n` + printBoard();
-//     }
-// }

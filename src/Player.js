@@ -21,6 +21,7 @@ class Player {
                 this.playturn = false;
                 player2.playturn = !this.playturn
                 if (checkWin()) {
+                    console.log(positions);
                     return {
                         message: `${this.name} Win \n Choose a position and play again :)`,
                         positions

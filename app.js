@@ -18,14 +18,15 @@ wss.on('connection', function connection(ws, req) {
     let generatedId = wss.getUniqueID();
     let id = generatedId;
     let type = req.url.match(/\?type=(.*?)\?/)[1];
-    let name = req.url.match(/\?name=(.*?)\?/)[1];
-    let symbol = req.url.match(/\?symbol=(.*?)?/)[1];
+    let name = req.url.match(/(?<=name=).*$/)[0];
+    console.log()
+    let symbol = wss.clients.size > 1 ? "O" : "X";
     let playturn = !players.size ? true : false;
     let isSpectator = players.size >= 2 ? true : false;
     ws.id = generatedId;
     ws.type = type;
     ws.isSpectator = isSpectator;
-
+    //wscat -c ws://localhost:3000?type=cmd?name=walid
     let player = type === "cmd" ? new CMDPlayer(name, symbol, playturn, isSpectator) : new BrowserPlayer(name, symbol, playturn, isSpectator);
 
     players.set(id, player);
@@ -66,7 +67,6 @@ wss.on('connection', function connection(ws, req) {
 
 
     ws.onmessage = function (event) {
-
         let player1 = players.get(ws.id);
         player1.playPosition = event.data;
 
@@ -87,7 +87,7 @@ wss.on('connection', function connection(ws, req) {
             wss.clients.forEach((client) => {
                 if (client.readyState === WebSocket.OPEN) {
                     if (client.type !== "cmd") {
-                        client.send(result);
+                        client.send(JSON.stringify(result));
                     } else {
                         client.send(`${result.message}\n` + printBoard(result.positions));
                     }
