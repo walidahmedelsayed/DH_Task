@@ -19,7 +19,6 @@ wss.on('connection', function connection(ws, req) {
     let id = generatedId;
     let type = req.url.match(/\?type=(.*?)\?/)[1];
     let name = req.url.match(/(?<=name=).*$/)[0];
-    console.log()
     let symbol = wss.clients.size > 1 ? "O" : "X";
     let playturn = !players.size ? true : false;
     let isSpectator = players.size >= 2 ? true : false;

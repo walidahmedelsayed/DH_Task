@@ -60,7 +60,6 @@ module.exports = checkWin = () => {
         positions[1] === positions[4] && positions[1] === positions[7] && positions[1] !== " " ||
         positions[2] === positions[5] && positions[2] === positions[8] && positions[2] !== " " ||
         positions[3] === positions[5] && positions[5] === positions[7] && positions[5] !== " ") {
-        clearBoard();
         return true;
     } else {
         return false;

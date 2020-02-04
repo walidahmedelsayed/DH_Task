@@ -21,10 +21,13 @@ class Player {
                 this.playturn = false;
                 player2.playturn = !this.playturn
                 if (checkWin()) {
-                    console.log(positions);
+                    let temp = {
+                        ...positions
+                    };
+                    clearBoard();
                     return {
                         message: `${this.name} Win \n Choose a position and play again :)`,
-                        positions
+                        positions: temp
                     };
                 } else if (checkDraw()) {
                     return {

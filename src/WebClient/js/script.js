@@ -24,6 +24,5 @@ ws.onmessage = function (event) {
         message,
         positions
     } = JSON.parse(event.data)
-    console.log(event);
     return drawBoard(positions);
 }
