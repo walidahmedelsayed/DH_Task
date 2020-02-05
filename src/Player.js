@@ -26,12 +26,12 @@ class Player {
                     };
                     clearBoard();
                     return {
-                        message: `${this.name} Win \n Choose a position and play again :)`,
+                        message: `${this.name} Won \n Choose a position and play again :)`,
                         positions: temp
                     };
                 } else if (checkDraw()) {
                     return {
-                        message: "Game Draw",
+                        message: "Game Draw, Choose a position and play again :)",
                         positions
                     };
                 } else {

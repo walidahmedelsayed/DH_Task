@@ -1,28 +1,41 @@
-const ws = new WebSocket('ws://localhost:3000?type=web?name=web');
+const name = prompt("Please Enter Your Name");
+const ws = new WebSocket(`ws://localhost:3000?type=web?name=${name}`);
 let images = document.getElementsByClassName("positions");
-const drawBoard = (data) => {
+let msg = document.getElementById("msg");
 
-    Array.prototype.forEach.call(images, img => {
-        if (data[img.id] === "X") {
-            img.src = "./images/x.png"
-        } else if ((data[img.id] === "O")) {
-            img.src = "./images/o.jpg"
-        }
-
-    });
-}
+document.getElementById("playerName").innerHTML = `Player Name: ${name}`;
 
 Array.prototype.forEach.call(images, img => {
     img.addEventListener("click", () => {
         ws.send(img.id);
-        drawBoard(images);
     })
 });
+const drawBoard = (positions) => {
 
-ws.onmessage = function (event) {
+    Array.prototype.forEach.call(images, img => {
+        if (positions[img.id] === "X") {
+            img.src = "./images/x.png"
+        } else if ((positions[img.id] === "O")) {
+            img.src = "./images/o.jpg"
+        } else {
+            img.src = "./images/background.png"
+        }
+
+    });
+}
+const clearBoard = (positions) => {
+    for (let value of Object.keys(positions)) {
+        positions[value] = " ";
+    }
+}
+
+
+ws.onmessage = (event) => {
+
     let {
         message,
         positions
     } = JSON.parse(event.data)
+    msg.innerHTML = message;
     return drawBoard(positions);
 }
