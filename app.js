@@ -25,9 +25,8 @@ wss.on('connection', function connection(ws, req) {
     ws.id = generatedId;
     ws.type = type;
     ws.isSpectator = isSpectator;
-    //wscat -c ws://localhost:3000?type=cmd?name=walid
+    console.log(`${name} connected to the server ...`)
     let player = type === "cmd" ? new CMDPlayer(name, symbol, playturn, isSpectator) : new BrowserPlayer(name, symbol, playturn, isSpectator);
-
     players.set(id, player);
 
     if (player.isSpectator) {
@@ -104,5 +103,6 @@ wss.on('connection', function connection(ws, req) {
 
     ws.onclose = () => {
         players.delete(ws.id);
+        console.log("User has left ...");
     }
 });
