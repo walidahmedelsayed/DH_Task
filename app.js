@@ -27,7 +27,6 @@ wss.on('connection', function connection(ws, req) {
     ws.isSpectator = isSpectator;
     console.log(`${name} connected to the server ...`)
     let player = new Player(name, symbol, playturn, isSpectator);
-    console.log(player)
     players.set(id, player);
 
     if (player.isSpectator) {
