@@ -1,6 +1,6 @@
 require("./src/Board");
-const CMDPlayer = require("./src/CMDPlayer");
-const BrowserPlayer = require("./src/BrowserPlayer");
+
+const Player = require("./src/Player")
 const WebSocket = require('ws');
 const wss = new WebSocket.Server({
     port: 3000
@@ -26,12 +26,13 @@ wss.on('connection', function connection(ws, req) {
     ws.type = type;
     ws.isSpectator = isSpectator;
     console.log(`${name} connected to the server ...`)
-    let player = type === "cmd" ? new CMDPlayer(name, symbol, playturn, isSpectator) : new BrowserPlayer(name, symbol, playturn, isSpectator);
+    let player = new Player(name, symbol, playturn, isSpectator);
+    console.log(player)
     players.set(id, player);
 
     if (player.isSpectator) {
         let message = "You are a spectator. The board will appear on any player's turn";
-        return player.constructor.name === "CMDPlayer" ? ws.send(message) : ws.send(JSON.stringify({
+        return ws.type === "cmd" ? ws.send(message) : ws.send(JSON.stringify({
             message
         }))
     }
