@@ -102,7 +102,20 @@ wss.on('connection', function connection(ws, req) {
     }
 
     ws.onclose = () => {
+        let name = players.get(ws.id).name;
         players.delete(ws.id);
-        console.log("User has left ...");
+        wss.clients.forEach((client) => {
+            if (client.readyState === WebSocket.OPEN) {
+                if (client.type !== "cmd") {
+                    client.send(JSON.stringify({
+                        message: `${name} has left ...`,
+                        positions
+                    }));
+                } else {
+                    client.send(`${name} has left ...`);
+                }
+            }
+        });
+        console.log(`${name} has left ...`);
     }
 });
