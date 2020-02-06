@@ -1,6 +1,6 @@
 # DH_Task
-
-## This this a Tic Tac Toe game. The game has two interfaces:
+This is a tic tac toe game using websocket.
+## The game has two interfaces:
 #### CMD interface:
    After running the server, you can connect to it using cmd. The project contains wscat package which is used to connect to the server via the following command: wscat -c ws://localhost:3000?type=cmd?name=playerName. After that, you can start playing by choosing the position number.
 #### Web browser interface:
